@@ -45,7 +45,7 @@ const userValidationRules = () => {
   ]
 }
 
-foodDetailValidationRules = () => {
+const foodDetailValidationRules = () => {
   return [
     body('name')
     .trim()
@@ -77,45 +77,52 @@ foodDetailValidationRules = () => {
        }
        return true
     }),
-    body('perAmount')
-    .toFloat()
-    .isFloat({min: 1})
-    .custom( (value, {req}) => {
-      if ((req.body.carb + req.body.fat + req.body.protein) > value) {
-        throw new Error('the amount is less than sum of macros');
-      }
-      return true
-    }),
     body('calorie')
     .toFloat()
     .isFloat()
-    .custom( (value, {req}) => {
-      let expectedCaloire = (req.body.carb * 4 + req.body.fat * 9 + req.body.protein * 4) / req.body.perAmount;
-      let CurrentCalorie = value / req.body.perAmount
-      if ((expectedCaloire * 0.95) > CurrentCalorie || CurrentCalorie > (expectedCaloire * 1.05)) {
+    .custom( (value, {req}) => { // calories can be higher than sum of macros but not vice versa
+      let expectedCaloire = (req.body.carb * 4 + req.body.fat * 9 + req.body.protein * 4);
+      let CurrentCalorie = value
+      if ((expectedCaloire * 0.95) > CurrentCalorie) {
         throw new Error('Calories and Macros do not match');
       }
       return true
     }),
     body('public')
-    .not()
-    .isEmpty()
+    .optional()
     .isBoolean(),
+    body('serving') //TODO: these might need more work
+    .custom( (value, {req}) => {
+      if (!value) {
+        throw new Error('There Has to be a main serving');
+      }
+      if (!value.units) {
+        throw new Error('Serving has no units');
+      }
+      if ((req.body.carb + req.body.fat + req.body.protein) > value.units) {
+        throw new Error('the serving size is less than sum of macros');
+      }
+      return true;
+    }),
     body('secondaryUnits') //TODO: these might need more work
-    .isArray(),
-    body('secondaryUnits.*.name')
-    .optional()
-    .not()
-    .isEmpty()
-    .isString(),
-    body('secondaryUnits.*.units')
-    .optional()
-    .toFloat()
-    .isFloat({min: 1}),
+    .custom( (value, {req}) => {
+      if (!value) {
+        return true;
+      }
+      value.forEach(element => {
+        if (!element.name) {
+          throw new Error('at least one of Secondary Units has no name');
+        }
+        if (!element.units) {
+          throw new Error('at least one of Secondary Units has no units');
+        }
+      });
+      return true;
+    })
   ]
 }
 
-dayParamValidationRules = () => {
+const dayParamValidationRules = () => {
   return [
     param('date')
     .not()
@@ -143,7 +150,7 @@ dayParamValidationRules = () => {
   ]
 }
 
-mealParamVaidationRules = () => {
+const mealParamVaidationRules = () => {
   return [
     param('meal')
     .not()
@@ -158,7 +165,7 @@ mealParamVaidationRules = () => {
   ]
 }
 
-mealVaidationRules = () => {
+const mealVaidationRules = () => {
   return [
     body('food')
     .customSanitizer(value => {

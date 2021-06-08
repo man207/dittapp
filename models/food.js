@@ -14,10 +14,6 @@ const foodSchema = new Schema({
         required: true,
         maxlength: 50
     },
-    company: {
-        type: Schema.Types.ObjectId,
-        ref: 'Company',
-    },
     calorie: {
         type: Number, 
         required: true,
@@ -37,9 +33,22 @@ const foodSchema = new Schema({
     unit: {
         type: String, 
         required: true,
-        enum: ['gr','ml']
+        enum: {
+            values: ['gr', 'ml'],
+            message: '{VALUE} is not a supported unit'
+          }
     },
-    secondaryUnits: [{
+    serving: {
+        name: {
+            type: String,
+            default: "وعده"
+        },
+        units: {
+            type: Number,
+            required: true
+        }
+    },
+    otherServings: [{
         name: {
             type: String,
             required: true
@@ -61,7 +70,8 @@ const foodSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-    }
+    },
+    
 });
 
 
