@@ -18,9 +18,10 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  stats: {
-    type: Schema.Types.ObjectId,
-    ref: 'Stat',
+  role: {
+    type: String, 
+    default: 'user',
+    enum: ['admin','mod','user']
   }
 });
 

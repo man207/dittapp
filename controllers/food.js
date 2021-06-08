@@ -67,6 +67,7 @@ exports.editFood = (req, res, next) => {
     const public = req.body.public;
         
     const user = req.userId;
+    const userRole = req.userRole
 
     const foodId = req.params.foodId
 
@@ -77,7 +78,7 @@ exports.editFood = (req, res, next) => {
                 message: 'No Food Found'
             })
         } else {
-            if (!(food.creator.toString() == user)) {
+            if ( (food.creator.toString() != user) || (userRole != "admin") ) {
                 return res.status(403).json({
                     message: 'You cannot edit this food'
                 })
@@ -132,9 +133,9 @@ exports.deleteFood = (req, res, next) => {
                 message: 'no food found'
             })
         } else {
-            if (!(food.creator.toString() == user)) {
+            if ( (food.creator.toString() != user) || (userRole != "admin") ) {
                 return res.status(403).json({
-                    message: 'Only creator of a food can delete it'
+                    message: 'You Cannot delete this food'
                 })
             } else {
                 food.delete()
