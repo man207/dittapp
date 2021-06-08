@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Food = require('./food');
 
 
 const daySchema = new Schema({
@@ -23,9 +22,25 @@ const daySchema = new Schema({
     {
       food: {
         type: Schema.Types.ObjectId,
-        ref: Food
+        ref: 'food'
       },
-      amount: Number,
+      amount: {
+        type: Number,
+        default: 1
+      },
+      time: Date
+    }
+  ],
+  activities : [
+    {
+      activity: {
+        type: Schema.Types.ObjectId,
+        ref: 'activity'
+      },
+      amount: {
+        type: Number,
+        default: 1
+      },
       time: Date
     }
   ]
