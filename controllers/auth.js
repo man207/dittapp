@@ -10,7 +10,7 @@ exports.signup = (req, res, next) => {
   const lastName = req.body.lastName;
   const password = req.body.password;
   bcrypt
-    .hash(password, 63)
+    .hash(password, 10)
     .then(hashedPw => {
       const user = new User({
         email: email,
@@ -54,7 +54,8 @@ exports.login = (req, res, next) => {
       const token = jwt.sign(
         {
           email: loadedUser.email,
-          userId: loadedUser._id.toString()
+          userId: loadedUser._id.toString(),
+          userRole: loadedUser.role
         },
         'somesupersecretsecret',
         { expiresIn: '1h' }

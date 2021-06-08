@@ -1,4 +1,4 @@
-const { body, validationResult, param } = require('express-validator/check')
+const { body, validationResult, param } = require('express-validator')
 const User = require('../models/user')
 const Day = require('../models/day')
 
@@ -166,6 +166,8 @@ mealVaidationRules = () => {
     })
   ]
 }
+
+
 module.exports = {
   mealVaidationRules,
   mealParamVaidationRules,
