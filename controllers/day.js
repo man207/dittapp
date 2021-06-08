@@ -5,7 +5,7 @@ const Day = require('../models/day');
 
 exports.getDay = (req, res, next) => {
   const dayDate = req.params.date.split('-').map(x => +x);
-  date = new persianDate(dayDate) //this is not compatible with Date() for some reason. (hours and minues are not 00:00)
+  date = new persianDate(dayDate) 
   Day.findOne({ date, user: req.userId })
     .then(day => {
       if (!day) {
