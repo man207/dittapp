@@ -10,18 +10,16 @@ const statSchema = new Schema({
     required: true,
     unique: true
   },
-  weight: [{
-    type: Number,
-    min:0,
+  weightGoal: [{
+    weight: {
+      type: Number,
+      min:0
+    },
     date: {
       type: Date,
       required: true
     }
   }],
-  weightGoal: {
-    type: Number,
-    min:0
-  },
   intakeGoal: [
     {
     carb: {

@@ -13,7 +13,11 @@ const daySchema = new Schema({
     ref: 'User',
     required: true,
   },
-  status: {
+  weight: {
+    type: Number,
+    min:0
+  },
+  mood: {
     type: Number,
     min:1,
     max:5
