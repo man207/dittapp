@@ -4,8 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const mainRoutes = require('./routes/main');
-const authRoutes = require('./routes/auth');
-const foodRoutes = require('./routes/food');
+const authRoutes = require('./auth/auth_routes');
+const foodRoutes = require('./food/food_routes');
 
 const app = express();
 

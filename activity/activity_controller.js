@@ -1,41 +1,28 @@
-const Food = require('../models/food')
+const Activity = require('./activity_model')
 
 
-exports.createFood = (req, res, next) => {
+exports.createActivity = (req, res, next) => {
 
     const name = req.body.name;
     const desc = req.body.desc;
-    const company = req.body.company;
-    const calorie = req.body.calorie;
-    const protein = req.body.protein;
-    const carb = req.body.protein;
-    const fat = req.body.fat;
-    const unit = req.body.unit;
+    const caloriePerMinute = req.body.caloriePerMinute;
     const public = req.body.public;
-    const serving = req.body.serving;
     
     const user = req.userId;
 
-    food = new Food( {
+    activity = new Activity( {
         name: name,
         desc: desc,
-        company: company,
-        calorie: calorie,
-        protein: protein,
-        carb: carb,
-        fat: fat,
-        unit: unit,
+        caloriePerMinute: caloriePerMinute,
         creator: user,
-        serving: serving,
         public: public ? true : false //just to make it works with 0 and 1
     })
     
         
-    food
-    .save()
+    activity.save()
     .then(result => {
         return res.status(201).json({
-            message: 'food created',
+            message: 'Activity Creted',
             result: result
         })
     })
@@ -49,23 +36,23 @@ exports.createFood = (req, res, next) => {
 
 
   //findandupdate doesn't concern with extra arguments
-exports.editFood = (req, res, next) => {
+exports.editActivity = (req, res, next) => {
 
     const newData = req.body;
 
-    const foodId = req.params.foodId;
+    const activityId = req.params.activityId;
 
     const userId = req.userId;
     const userRole = req.userRole;
 
 
-    // insures that users can't modify their or other's foods afther creating them 
+    // insures that users can't modify their or other's activitys validity afther creating them 
     // callback vs. promise?
     if (!['admin','mod'].includes(userRole)) {
         delete newData.verified;
-        delete newData.creator;
+        delete newData.creator; //this is redundent
 
-        Food.findOneAndUpdate({_id: foodId , creator: userId }, newData, { new: true}, function(err, doc) {
+        Activity.findOneAndUpdate({_id: activityId , creator: userId }, newData, { new: true}, function(err, doc) {
             if (err) return res.status(500).json({
                 message: err
                 });
@@ -77,7 +64,7 @@ exports.editFood = (req, res, next) => {
             });
         });
     } else {
-        Food.findByIdAndUpdate(foodId, newData, { new: true}, function(err, doc) {
+        Activity.findByIdAndUpdate(activityId, newData, { new: true}, function(err, doc) {
             if (err) return res.status(500).json({
                 message: err
             });
@@ -94,30 +81,30 @@ exports.editFood = (req, res, next) => {
     
   };
 
-exports.deleteFood = (req, res, next) => {
+exports.deleteActivity = (req, res, next) => {
 
     const user = req.userId;
     const userRole = req.userRole
 
-    const foodId = req.params.foodId
+    const activityId = req.params.activityId
 
 
     // can i use delete() insted? 
-    Food.findById(foodId)
-    .then(food => {
-        if (!food) {
+    Activity.findById(activityId)
+    .then(activity => {
+        if (!activity) {
             return res.status(404).json({
-                message: 'no food found'
+                message: 'no activity found'
             })
         } else {
-            if ( (food.creator.toString() != user) || (userRole != "admin") ) {
+            if ( (activity.creator.toString() != user) || (userRole != "admin") ) {
                 return res.status(403).json({
-                    message: 'You Cannot delete this food'
+                    message: 'You Cannot delete this activity'
                 })
             } else {
-                food.delete()
+                activity.delete()
                 res.status(202).json({
-                    message: 'Food deleted'
+                    message: 'Activity deleted'
                 })
             }
         }
@@ -131,27 +118,27 @@ exports.deleteFood = (req, res, next) => {
 
   };
 
-exports.getFood = (req, res , next) => {
+exports.getActivity = (req, res , next) => {
     
     const userId = req.userId;
     const userRole = req.userRole
 
-    const foodId = req.params.foodId
+    const activityId = req.params.activityId
 
-    Food.findById(foodId)
-    .then(food => {
-        if (!food) {
+    Activity.findById(activityId)
+    .then(activity => {
+        if (!activity) {
             return res.status(404).json({
-                message: 'no food found'
+                message: 'no activity found'
             })
-        } else if ( (food.creator.toString() != userId) && (!['admin','mod'].includes(userRole)) && (food.public == false)) { // food is not made public by the creator
+        } else if ( (activity.creator.toString() != userId) && (!['admin','mod'].includes(userRole)) && (activity.public == false)) { // activity is not made public by the creator
             return res.status(403).json({
-                message: 'no food found'
+                message: 'no activity found'
             })
         }
         else {
             return res.status(200).json({
-                result: food
+                result: activity
             })
         }
     })

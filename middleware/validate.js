@@ -1,6 +1,5 @@
 const { body, validationResult, param } = require('express-validator')
-const User = require('../models/user')
-const Day = require('../models/day')
+const User = require('../auth/user')
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -122,63 +121,40 @@ const foodDetailValidationRules = () => {
   ]
 }
 
-const dayParamValidationRules = () => {
+
+const activityDetailValidationRules = () => {
   return [
-    param('date')
+    body('name')
+    .trim()
     .not()
     .isEmpty()
-    .isString()
-    .custom(value => {
-      x = value.split('-').map(x => +x);
-      if (!(x.length === 3)) {
-        throw new Error('Date is not correct');
-      }
-      if (x.includes(NaN)) {
-        throw new Error('dates must be numbers');
-      }
-      if (x[0] < 1370 || !Number.isInteger(x[0])) {  //the time is not correct (not bad tho)
-        throw new Error('year is off');
-      }
-      if (x[1] < 1 || x[1] > 12 || !Number.isInteger(x[1]))  {  //the time is not correct (not bad tho)
-        throw new Error('month is off');
-      }
-      if (x[2] < 1 || x[2] > 31 || !Number.isInteger(x[2])) {  //the time is not correct (not bad tho)
-        throw new Error('day is off');
-      }
-      return true
-    })
+    .isLength({max: 20}),
+    body('desc')
+    .trim()
+    .not()
+    .isEmpty()
+    .isLength({max: 50}),
+    body('caloriePerMinute')
+    .trim()
+    .not()
+    .isEmpty()
+    .min(0),
+    body('desc')
+    .trim()
+    .not()
+    .isEmpty()
+    .isLength({max: 50}),
+    body('public')
+    .optional()
+    .isBoolean(),
   ]
 }
 
-const mealParamVaidationRules = () => {
-  return [
-    param('meal')
-    .not()
-    .isEmpty()
-    .isString()
-    .custom( value => {
-      if (!Object.keys(Day.schema.tree.meals).includes(value)) {
-        throw Error('No such meal');
-      }
-      return true
-    })
-  ]
-}
 
-const mealVaidationRules = () => {
-  return [
-    body('food')
-    .customSanitizer(value => {
-      return value.map(x => x.food = Schema.Types.ObjectId(x.food) )
-    })
-  ]
-}
 
 
 module.exports = {
-  mealVaidationRules,
-  mealParamVaidationRules,
-  dayParamValidationRules,
+  activityDetailValidationRules,
   foodDetailValidationRules,  
   userValidationRules,
   validate,
