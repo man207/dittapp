@@ -1,6 +1,7 @@
 const express = require('express');
 
-const {activityDetailValidationRules , validate} = require('../middleware/validate')
+const {validate} = require('../middleware/validate')
+const {activityCreateValidationRules , activityEditValidationRules} = require('./activity_validate')
 const activityController = require('./activity_controller');
 const isAuth = require('../middleware/is-auth');
 
@@ -8,7 +9,7 @@ const router = express.Router();
 
 router.post('/add',
             isAuth,
-            activityDetailValidationRules(),
+            activityCreateValidationRules(),
             validate,
             activityController.createActivity)
 
@@ -18,7 +19,7 @@ router.get('/:activityId',
 
 router.put('/:activityId', 
             isAuth, 
-            activityDetailValidationRules() , 
+            activityEditValidationRules() , 
             validate , 
             activityController.editActivity) //all of details should be passed as args
             

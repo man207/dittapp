@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 
-const exersiceSchema = new Schema({
+const burnSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -16,8 +16,12 @@ const exersiceSchema = new Schema({
   minutes: {
       type: Number,
       required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now()
   }
 });
 
 
-module.exports = mongoose.model('Exersice', exersiceSchema);
+module.exports = mongoose.model('Burn', burnSchema);

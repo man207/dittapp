@@ -19,8 +19,13 @@ const consumeSchema = new Schema({
   amount: {
     type: Number,
     required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now()
   }
 });
 
+//Amount is Amount of serving (weight of food = amount * serving size)
 
 module.exports = mongoose.model('Consume', consumeSchema);

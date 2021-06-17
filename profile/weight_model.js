@@ -14,6 +14,10 @@ const weightSchema = new Schema({
       min: 0,
       max: 300,
       required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now()
   }
 });
 
