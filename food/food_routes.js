@@ -1,6 +1,8 @@
 const express = require('express');
 
-const {foodDetailValidationRules , validate} = require('../middleware/validate')
+const {validate} = require('../middleware/validate')
+const {foodCreateValidationRules, foodEditValidationRules} = require('./food_validate')
+
 const foodController = require('./food_controller');
 const isAuth = require('../middleware/is-auth');
 
@@ -8,7 +10,7 @@ const router = express.Router();
 
 router.post('/add',
             isAuth,
-            foodDetailValidationRules(),
+            foodCreateValidationRules(),
             validate,
             foodController.createFood)
 
@@ -18,7 +20,7 @@ router.get('/:foodId',
 
 router.put('/:foodId', 
             isAuth, 
-            foodDetailValidationRules() , 
+            foodEditValidationRules() , 
             validate , 
             foodController.editFood) //all of details should be passed as args
             

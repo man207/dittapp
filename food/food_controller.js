@@ -116,7 +116,7 @@ exports.deleteFood = (req, res, next) => {
                 })
             } else {
                 food.delete()
-                res.status(202).json({
+                res.status(200).json({
                     message: 'Food deleted'
                 })
             }

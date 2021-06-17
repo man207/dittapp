@@ -48,16 +48,6 @@ const foodSchema = new Schema({
             required: true
         }
     },
-    otherServings: [{
-        name: {
-            type: String,
-            required: true
-        },
-        units: {
-            type: Number,
-            required: true
-        }
-    }],
     verified: {
         type: Boolean, 
         default: false
