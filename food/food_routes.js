@@ -20,9 +20,9 @@ router.get('/:foodId',
 
 router.put('/:foodId', 
             isAuth, 
-            foodEditValidationRules() , 
+            foodEditValidationRules(), 
             validate , 
-            foodController.editFood) //all of details should be passed as args
+            foodController.editFood)
             
 router.delete('/:foodId', 
             isAuth , 

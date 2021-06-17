@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { validate } = require('../../middleware/validate')
-//const {consumeCreateValidationRules , consumeEditValidationRules} = require('./consume_validate')
+const {consumeCreateValidationRules , consumeEditValidationRules} = require('./consume_validate')
 const consumeController = require('./consume_controller');
 const isAuth = require('../../middleware/is-auth');
 

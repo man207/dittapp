@@ -1,5 +1,4 @@
-const { body, validationResult, param } = require('express-validator')
-const User = require('../auth/user')
+const { body } = require('express-validator')
 
 
 

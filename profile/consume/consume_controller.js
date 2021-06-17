@@ -3,14 +3,14 @@ const Consume = require('./consume_model')
 
 exports.createConsume = (req, res, next) => {
 
-    const food = req.body.name;
-    const serving = req.body.desc;
-    const amount = req.body.company;
+    const food = req.body.food;
+    const serving = req.body.serving;
+    const amount = req.body.amount;
 
-    if (req.body.company) {
-        const date = req.body.company;
+    if (req.body.date) {
+        var date = req.body.date;
     } else {
-        const date = Date.now();
+        var date = Date.now();
     }
 
     const user = req.userId;
@@ -49,8 +49,8 @@ exports.editConsume = (req, res, next) => {
     if (req.body.amount) {
         newData.amount = req.body.amount
     }
-    if (!(req.body.serving === undefined)) {
-        newData.serving = req.body.amount
+    if (req.body.serving !== undefined) {
+        newData.serving = req.body.serving
     }
 
     const consumeId = req.params.consumeId;
@@ -139,5 +139,4 @@ exports.getConsume = (req, res, next) => {
             }
             next(err);
         })
-
 };

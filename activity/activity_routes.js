@@ -21,7 +21,7 @@ router.put('/:activityId',
             isAuth, 
             activityEditValidationRules() , 
             validate , 
-            activityController.editActivity) //all of details should be passed as args
+            activityController.editActivity) 
             
 router.delete('/:activityId', 
             isAuth , 
