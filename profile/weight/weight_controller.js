@@ -70,6 +70,7 @@ exports.editWeight = (req, res, next) => {
 exports.deleteWeight = (req, res, next) => {
 
     const user = req.userId;
+    const userRole = req.userRole
 
     const weightId = req.params.weightId
 
@@ -81,7 +82,7 @@ exports.deleteWeight = (req, res, next) => {
                     message: 'no weight found'
                 })
             } else {
-                if ((weight.creator.toString() != user) || (userRole != "admin")) {
+                if ((weight.user.toString() != user) || (userRole != "admin")) {
                     return res.status(403).json({
                         message: 'You Cannot delete this weight'
                     })
@@ -115,7 +116,7 @@ exports.getWeight = (req, res, next) => {
                 return res.status(404).json({
                     message: 'no weight found'
                 })
-            } else if ((weight.creator.toString() != userId) && (!['admin', 'mod'].includes(userRole))) {
+            } else if ((weight.user.toString() != userId) && (!['admin', 'mod'].includes(userRole))) {
                 return res.status(403).json({
                     message: 'no weight found'
                 })
