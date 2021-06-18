@@ -3,7 +3,6 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 
-const mainRoutes = require('./routes/main');
 const authRoutes = require('./auth/auth_routes');
 const foodRoutes = require('./food/food_routes');
 const activityRoutes = require('./activity/activity_routes');
@@ -17,7 +16,6 @@ app.use('/auth', authRoutes);
 app.use('/food', foodRoutes);
 app.use('/activity', activityRoutes);
 app.use('/profile', profileRoutes);
-app.use('/', mainRoutes);
 
 
 app.use((error, req, res, next) => {
