@@ -39,7 +39,7 @@ exports.createBurn = (req, res, next) => {
 };
 
 
-//only can change amount and serving
+//only can change minutes
 exports.editBurn = (req, res, next) => {
 
     const newData = {};
@@ -75,7 +75,6 @@ exports.deleteBurn = (req, res, next) => {
     const burnId = req.params.burnId
 
 
-    // can i use delete() insted? 
     Burn.findById(burnId)
         .then(burn => {
             if (!burn) {

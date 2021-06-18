@@ -7,7 +7,6 @@ const isAuth = require('../../middleware/is-auth');
 
 const router = express.Router();
 
-// change to new???
 router.post('/add',
     isAuth,
     burnCreateValidationRules(),

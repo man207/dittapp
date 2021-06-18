@@ -13,7 +13,8 @@ const burnCreateValidationRules = () => {
       .trim()
       .not()
       .isEmpty()
-      .isFloat(),
+      .toFloat()
+      .isFloat({min:0}),
     body('date')
       .optional()
       .isDate(),
