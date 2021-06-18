@@ -42,6 +42,7 @@ exports.createConsume = (req, res, next) => {
 
 
 //only can change amount and serving
+//admin can't change this
 exports.editConsume = (req, res, next) => {
 
     const newData = {};
@@ -76,6 +77,7 @@ exports.editConsume = (req, res, next) => {
 exports.deleteConsume = (req, res, next) => {
 
     const user = req.userId;
+    const userRole = req.userRole;
 
     const consumeId = req.params.consumeId
 
@@ -88,7 +90,7 @@ exports.deleteConsume = (req, res, next) => {
                     message: 'no consume found'
                 })
             } else {
-                if ((consume.creator.toString() != user) || (userRole != "admin")) {
+                if ((consume.user.toString() != user) && (userRole != "admin")) {
                     return res.status(403).json({
                         message: 'You Cannot delete this consume'
                     })
@@ -112,17 +114,17 @@ exports.deleteConsume = (req, res, next) => {
 exports.getConsume = (req, res, next) => {
 
     const userId = req.userId;
-    const userRole = req.userRole
+    const userRole = req.userRole;
 
-    const consumeId = req.params.consumeId
+    const consumeId = req.params.consumeId;
 
-    Consume.findById(consumeId)
+    Consume.findById(consumeId).populate('food')
         .then(consume => {
             if (!consume) {
                 return res.status(404).json({
                     message: 'no consume found'
                 })
-            } else if ((consume.creator.toString() != userId) && (!['admin', 'mod'].includes(userRole))) { // consume is not made public by the creator
+            } else if ((consume.user.toString() != userId) && (!['admin', 'mod'].includes(userRole))) {
                 return res.status(403).json({
                     message: 'no consume found'
                 })
