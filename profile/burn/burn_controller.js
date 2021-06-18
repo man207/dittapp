@@ -71,6 +71,7 @@ exports.editBurn = (req, res, next) => {
 exports.deleteBurn = (req, res, next) => {
 
     const user = req.userId;
+    const userRole = req.userRole;
 
     const burnId = req.params.burnId
 
@@ -82,7 +83,7 @@ exports.deleteBurn = (req, res, next) => {
                     message: 'no burn found'
                 })
             } else {
-                if ((burn.creator.toString() != user) || (userRole != "admin")) {
+                if ((burn.user.toString() != user) || (userRole != "admin")) {
                     return res.status(403).json({
                         message: 'You Cannot delete this burn'
                     })
@@ -116,7 +117,7 @@ exports.getBurn = (req, res, next) => {
                 return res.status(404).json({
                     message: 'no burn found'
                 })
-            } else if ((burn.creator.toString() != userId) && (!['admin', 'mod'].includes(userRole))) { // burn is not made public by the creator
+            } else if ((burn.user.toString() != userId) && (!['admin', 'mod'].includes(userRole))) { // burn is not made public by the user
                 return res.status(403).json({
                     message: 'no burn found'
                 })
