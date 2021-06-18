@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const mainRoutes = require('./routes/main');
 const authRoutes = require('./auth/auth_routes');
 const foodRoutes = require('./food/food_routes');
+const activityRoutes = require('./activity/activity_routes');
+const profileRoutes = require('./profile/profile_routes');
 
 const app = express();
 
@@ -13,7 +15,10 @@ const app = express();
 app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/food', foodRoutes);
+app.use('/activity', activityRoutes);
+app.use('/profile', profileRoutes);
 app.use('/', mainRoutes);
+
 
 app.use((error, req, res, next) => {
   console.log(error);
