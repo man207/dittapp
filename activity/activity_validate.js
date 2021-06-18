@@ -19,7 +19,8 @@ const activityCreateValidationRules = () => {
       .trim()
       .not()
       .isEmpty()
-      .min(0),
+      .toFloat()
+      .isFloat({min:0}),
       body('public')
       .optional()
       .isBoolean(),
@@ -45,7 +46,8 @@ const activityEditValidationRules = () => {
       .trim()
       .not()
       .isEmpty()
-      .min(0),
+      .toFloat()
+      .isFloat({min:0}),
       body('public')
       .optional()
       .isBoolean(),
