@@ -1,5 +1,7 @@
 const Weight = require('./weight_model')
-
+const jalaali = require('jalaali-js')
+const startOfDay = require('date-fns/startOfDay')
+const endOfDay = require('date-fns/endOfDay')
 
 exports.createWeight = (req, res, next) => {
 
@@ -124,6 +126,51 @@ exports.getWeight = (req, res, next) => {
             else {
                 return res.status(200).json({
                     result: weight
+                })
+            }
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+
+};
+
+exports.getLatestWeight = (req, res, next) => {
+
+    const userId = req.userId;
+    const userRole = req.userRole;
+
+
+    const date = req.body.date;
+
+    
+    if (!date) {
+        day = new Date()
+    }
+    else {
+        day = jalaali.toGregorian(date[0], date[1], date[2])
+        day = new Date(day.gy, day.gm - 1, day.gd)
+    }
+
+    
+    Weight.find(
+        { user: userId,
+            date: 
+            {
+                $lt: endOfDay(day)
+            }
+        }).sort({ date: -1 }).limit(1)
+        .then(weight => {
+            if (!weight) {
+                return res.status(404).json({
+                    message: 'no weight found'
+                })
+            } else {
+                return res.status(200).json({
+                    result: weight[0]
                 })
             }
         })

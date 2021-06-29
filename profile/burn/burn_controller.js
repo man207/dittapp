@@ -1,4 +1,7 @@
 const Burn = require('./burn_model')
+const jalaali = require('jalaali-js')
+const startOfDay = require('date-fns/startOfDay')
+const endOfDay = require('date-fns/endOfDay')
 
 
 exports.createBurn = (req, res, next) => {
@@ -37,7 +40,6 @@ exports.createBurn = (req, res, next) => {
         next(err);
     })
 };
-
 
 //only can change minutes
 exports.editBurn = (req, res, next) => {
@@ -123,6 +125,51 @@ exports.getBurn = (req, res, next) => {
                 })
             }
             else {
+                return res.status(200).json({
+                    result: burn
+                })
+            }
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+
+};
+
+
+exports.getDayBurn = (req, res, next) => {
+
+    const userId = req.userId;
+    const userRole = req.userRole;
+
+    const date = req.body.date;
+
+    
+    if (!date) {
+        day = new Date()
+    }
+    else {
+        day = jalaali.toGregorian(date[0], date[1], date[2])
+        day = new Date(day.gy, day.gm - 1, day.gd)
+    }
+    
+    burnBurn.find(
+        { user: userId,
+            date: 
+            {
+                $gte: startOfDay(new Date(day.gy, day.gm - 1, day.gd)),
+                $lt: endOfDay(new Date(day.gy, day.gm - 1, day.gd))
+            }
+        })
+        .then(burn => {
+            if (!burn) {
+                return res.status(404).json({
+                    message: 'no burn found'
+                })
+            } else {
                 return res.status(200).json({
                     result: burn
                 })

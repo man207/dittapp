@@ -7,7 +7,7 @@ exports.createActivity = (req, res, next) => {
     const desc = req.body.desc;
     const caloriePerMinute = req.body.caloriePerMinute;
     const public = req.body.public;
-    
+
     const user = req.userId;
 
     activity = new Activity( {
@@ -18,7 +18,7 @@ exports.createActivity = (req, res, next) => {
         public: public ? true : false //just to make it works with 0 and 1
     })
     
-        
+
     activity.save()
     .then(result => {
         return res.status(201).json({

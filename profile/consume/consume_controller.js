@@ -1,5 +1,7 @@
 const Consume = require('./consume_model')
-
+const jalaali = require('jalaali-js')
+const startOfDay = require('date-fns/startOfDay')
+const endOfDay = require('date-fns/endOfDay')
 
 exports.createConsume = (req, res, next) => {
 
@@ -141,4 +143,50 @@ exports.getConsume = (req, res, next) => {
             }
             next(err);
         })
+};
+
+exports.getDayConsume = (req, res, next) => {
+
+    const userId = req.userId;
+    const userRole = req.userRole;
+
+    const date = req.body.date;
+
+    
+    if (!date) {
+        day = new Date()
+    }
+    else {
+        day = jalaali.toGregorian(date[0], date[1], date[2])
+        day = new Date(day.gy, day.gm - 1, day.gd)
+    }
+
+    
+    Consume.find(
+        { user: userId,
+            date: 
+                {
+                    $gte: startOfDay(day),
+                    $lt: endOfDay(day)
+                }
+        }).populate('food')
+        .then(consume => {
+            if (!consume) {
+                return res.status(404).json({
+                    message: 'no consume found'
+                })
+            }
+            else {
+                return res.status(200).json({
+                    result: consume
+                })
+            }
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+
 };

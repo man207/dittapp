@@ -2,6 +2,7 @@ const express = require('express');
 
 const { validate } = require('../../middleware/validate')
 const {consumeCreateValidationRules , consumeEditValidationRules} = require('./consume_validate')
+const {dayParamValidationRules} = require('../day_validate')
 const consumeController = require('./consume_controller');
 const isAuth = require('../../middleware/is-auth');
 
@@ -14,9 +15,16 @@ router.post('/add',
     validate,
     consumeController.createConsume)
 
+router.get('/day',
+    isAuth,
+    dayParamValidationRules(),
+    validate,
+    consumeController.getDayConsume)
+
 router.get('/:consumeId',
     isAuth,
     consumeController.getConsume)
+
 
 router.put('/:consumeId',
     isAuth,
@@ -27,7 +35,6 @@ router.put('/:consumeId',
 router.delete('/:consumeId',
     isAuth,
     consumeController.deleteConsume)
-
 
 
 module.exports = router;

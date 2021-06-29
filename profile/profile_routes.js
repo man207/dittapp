@@ -10,4 +10,5 @@ router.use('/consume' , consumeRoutes)
 router.use('/burn' , burnRoutes)
 router.use('/weight' , weightRoutes)
 
+
 module.exports = router;
