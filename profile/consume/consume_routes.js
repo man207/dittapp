@@ -15,14 +15,14 @@ router.post('/add',
     validate,
     consumeController.createConsume)
 
-router.get('/day',
+router.get('/day/:date',
     isAuth,
     dayParamValidationRules(),
     validate,
     consumeController.getDayConsume)
 
 router.get('/:consumeId',
-    isAuth,
+    isAuth, 
     consumeController.getConsume)
 
 

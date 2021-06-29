@@ -145,7 +145,7 @@ exports.getDayBurn = (req, res, next) => {
     const userId = req.userId;
     const userRole = req.userRole;
 
-    const date = req.body.date;
+    const date = req.params.date;
 
     
     if (!date) {

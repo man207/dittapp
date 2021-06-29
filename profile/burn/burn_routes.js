@@ -18,7 +18,7 @@ router.get('/:burnId',
     isAuth,
     burnController.getBurn)
 
-router.get('/day',
+router.get('/day/:date',
     isAuth,
     dayParamValidationRules(),
     validate,

@@ -144,7 +144,7 @@ exports.getLatestWeight = (req, res, next) => {
     const userRole = req.userRole;
 
 
-    const date = req.body.date;
+    const date = req.params.date;
 
     
     if (!date) {

@@ -14,8 +14,8 @@ router.post('/add',
     weightCreateValidationRules(),
     validate,
     weightController.createWeight)
-    
-router.get('/day',
+
+router.get('/day/:date',
     isAuth,
     dayParamValidationRules(),
     validate,

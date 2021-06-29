@@ -1,9 +1,9 @@
-const { body } = require('express-validator')
+const { param } = require('express-validator')
 
 
 const dayParamValidationRules = () => {
     return [
-      body('date')
+      param('date')
       .optional()
       .isString()
       .customSanitizer(value => {
