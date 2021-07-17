@@ -6,7 +6,7 @@ const authController = require('./auth_controller.js');
 
 const router = express.Router();
 
-router.put(
+router.post(
   '/signup',
   userValidationRules(),
   validate,

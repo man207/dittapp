@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const authRoutes = require('./auth/auth_routes');
 const foodRoutes = require('./food/food_routes');
@@ -10,8 +11,9 @@ const profileRoutes = require('./profile/profile_routes');
 
 const app = express();
 
-
 app.use(express.json());
+app.use(cors());
+
 app.use('/auth', authRoutes);
 app.use('/food', foodRoutes);
 app.use('/activity', activityRoutes);
