@@ -61,7 +61,7 @@ exports.editConsume = (req, res, next) => {
     const userId = req.userId;
 
 
-    Consume.findOneAndUpdate({ _id: consumeId, user: userId }, newData, { new: true }, function (err, doc) {
+    Consume.findOneAndUpdate({ _id: consumeId, user: userId }, newData, { new: true }, function (err, result) {
         if (err) return res.status(500).json({
             message: err
         });
@@ -69,7 +69,7 @@ exports.editConsume = (req, res, next) => {
             message: "not Found"
         });
         return res.status(200).json({
-            resault: result
+            result: result
         });
     });
 
@@ -157,14 +157,14 @@ exports.getDayConsume = (req, res, next) => {
         day = new Date()
     }
     else {
-        day = jalaali.toGregorian(date[0], date[1], date[2])
-        day = new Date(day.gy, day.gm - 1, day.gd)
+        day = new Date(date[0], date[1] - 1, date[2])
+        console.log(date)
     }
 
     
     Consume.find(
         { user: userId,
-            date: 
+            date:   
                 {
                     $gte: startOfDay(day),
                     $lt: endOfDay(day)

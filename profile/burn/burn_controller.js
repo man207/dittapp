@@ -1,5 +1,4 @@
 const Burn = require('./burn_model')
-const jalaali = require('jalaali-js')
 const startOfDay = require('date-fns/startOfDay')
 const endOfDay = require('date-fns/endOfDay')
 
@@ -10,9 +9,9 @@ exports.createBurn = (req, res, next) => {
     const minutes = req.body.minutes;
 
     if (req.body.date) {
-        const date = req.body.date;
+        var date = req.body.date;
     } else {
-        const date = Date.now();
+        var date = Date.now();
     }
 
     const user = req.userId;
@@ -55,7 +54,7 @@ exports.editBurn = (req, res, next) => {
     const userId = req.userId;
 
 
-    Burn.findOneAndUpdate({ _id: burnId, user: userId }, newData, { new: true }, function (err, doc) {
+    Burn.findOneAndUpdate({ _id: burnId, user: userId }, newData, { new: true }, function (err, result) {
         if (err) return res.status(500).json({
             message: err
         });
@@ -73,7 +72,6 @@ exports.editBurn = (req, res, next) => {
 exports.deleteBurn = (req, res, next) => {
 
     const user = req.userId;
-    const userRole = req.userRole;
 
     const burnId = req.params.burnId
 
@@ -85,7 +83,7 @@ exports.deleteBurn = (req, res, next) => {
                     message: 'no burn found'
                 })
             } else {
-                if ((burn.user.toString() != user) || (userRole != "admin")) {
+                if (burn.user.toString() != user) {
                     return res.status(403).json({
                         message: 'You Cannot delete this burn'
                     })
@@ -113,7 +111,7 @@ exports.getBurn = (req, res, next) => {
 
     const burnId = req.params.burnId
 
-    Burn.findById(burnId)
+    Burn.findById(burnId).populate('activity')
         .then(burn => {
             if (!burn) {
                 return res.status(404).json({
@@ -152,18 +150,17 @@ exports.getDayBurn = (req, res, next) => {
         day = new Date()
     }
     else {
-        day = jalaali.toGregorian(date[0], date[1], date[2])
-        day = new Date(day.gy, day.gm - 1, day.gd)
+        day = new Date(date[0], date[1] - 1, date[2])
     }
     
-    burnBurn.find(
+    Burn.find(
         { user: userId,
             date: 
             {
-                $gte: startOfDay(new Date(day.gy, day.gm - 1, day.gd)),
-                $lt: endOfDay(new Date(day.gy, day.gm - 1, day.gd))
+                $gte: startOfDay(day),
+                $lt: endOfDay(day)
             }
-        })
+        }).populate('activity')
         .then(burn => {
             if (!burn) {
                 return res.status(404).json({

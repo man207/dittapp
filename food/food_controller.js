@@ -11,23 +11,21 @@ exports.createFood = (req, res, next) => {
     const carb = req.body.protein;
     const fat = req.body.fat;
     const unit = req.body.unit;
-    const public = req.body.public;
     const serving = req.body.serving;
-    
+    const perAmount = req.body.perAmount
     const user = req.userId;
 
     food = new Food( {
         name: name,
         desc: desc,
         company: company,
-        calorie: calorie,
-        protein: protein,
-        carb: carb,
-        fat: fat,
+        calorie: calorie / perAmount,
+        protein: protein / perAmount,
+        carb: carb / perAmount,
+        fat: fat / perAmount,
         unit: unit,
         creator: user,
         serving: serving,
-        public: public ? true : false //just to make it works with 0 and 1
     })
     
         
@@ -144,14 +142,36 @@ exports.getFood = (req, res , next) => {
             return res.status(404).json({
                 message: 'no food found'
             })
-        } else if ( (food.creator.toString() != userId) && (!['admin','mod'].includes(userRole)) && (food.public == false)) { // food is not made public by the creator
-            return res.status(403).json({
-                message: 'no food found'
-            })
         }
         else {
             return res.status(200).json({
                 result: food
+            })
+        }
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+        next(err);
+    })
+
+};
+
+exports.searchFood = (req, res , next) => {
+    let foodName= new RegExp(req.params.foodname,'i'); 
+    Food.find({name:foodName})
+    .then(foods => {
+        console.log(foods)
+
+        if (!foods) {
+            return res.status(404).json({
+                message: 'غذایی پیدا نشد'
+            })
+        }
+        else {
+            return res.status(200).json({
+                result: foods
             })
         }
     })

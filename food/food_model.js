@@ -52,10 +52,6 @@ const foodSchema = new Schema({
         type: Boolean, 
         default: false
     },
-    public: {
-        type: Boolean, 
-        default: false
-    },
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',

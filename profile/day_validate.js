@@ -14,7 +14,7 @@ const dayParamValidationRules = () => {
         if (x.includes(NaN)) {
           throw new Error('dates must be numbers');
         }
-        if (x[0] < 1370 || !Number.isInteger(x[0])) {  //the time is not correct (not bad tho)
+        if (x[0] < 1970 || !Number.isInteger(x[0])) {  //the time is not correct (not bad tho)
           throw new Error('year is off');
         }
         if (x[1] < 1 || x[1] > 12 || !Number.isInteger(x[1]))  {  //the time is not correct (not bad tho)

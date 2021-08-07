@@ -13,13 +13,15 @@ const consumeCreateValidationRules = () => {
       .trim()
       .not()
       .isEmpty()
-      .isFloat(),
+      .isFloat({min: 0 }),
     body('serving')
       .optional()
       .isBoolean(),
     body('date')
       .optional()
-      .isDate(),
+      .custom((date) => {
+        return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+      }),
   ]
 }
 
@@ -30,7 +32,7 @@ const consumeEditValidationRules = () => {
       .trim()
       .not()
       .isEmpty()
-      .isFloat(),
+      .isFloat({min: 0 }),
     body('serving')
       .optional()
       .isBoolean()

@@ -13,6 +13,11 @@ router.post('/add',
             validate,
             activityController.createActivity)
 
+router.get('/search/:activityname', 
+            isAuth, 
+            validate , 
+            activityController.searchActivity)
+
 router.get('/:activityId', 
             isAuth , 
             activityController.getActivity)

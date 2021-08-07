@@ -150,3 +150,29 @@ exports.getActivity = (req, res , next) => {
     })
 
 };
+
+exports.searchActivity = (req, res , next) => {
+    let activityName= new RegExp(req.params.activityname,'i'); 
+    Activity.find({name:activityName})
+    .then(activitys => {
+        console.log(activitys)
+
+        if (!activitys) {
+            return res.status(404).json({
+                message: 'فعالیتی پیدا نشد'
+            })
+        }
+        else {
+            return res.status(200).json({
+                result: activitys
+            })
+        }
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+        next(err);
+    })
+
+};
