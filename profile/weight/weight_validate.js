@@ -5,19 +5,17 @@ const { body } = require('express-validator')
 
 const weightCreateValidationRules = () => {
   return [
-    body('activity')
-      .trim()
-      .not()
-      .isEmpty(),
     body('weight')
       .trim()
       .not()
       .isEmpty()
       .toFloat()
       .isFloat({min:0}),
-    body('date')
+      body('date')
       .optional()
-      .isDate(),
+      .custom((date) => {
+        return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+      }),
   ]
 }
 

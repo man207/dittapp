@@ -1,5 +1,4 @@
 const Consume = require('./consume_model')
-const jalaali = require('jalaali-js')
 const startOfDay = require('date-fns/startOfDay')
 const endOfDay = require('date-fns/endOfDay')
 
@@ -148,7 +147,6 @@ exports.getConsume = (req, res, next) => {
 exports.getDayConsume = (req, res, next) => {
 
     const userId = req.userId;
-    const userRole = req.userRole;
 
     const date = req.params.date;
 
@@ -158,7 +156,6 @@ exports.getDayConsume = (req, res, next) => {
     }
     else {
         day = new Date(date[0], date[1] - 1, date[2])
-        console.log(date)
     }
 
     
