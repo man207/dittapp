@@ -18,6 +18,11 @@ router.get('/search/:activityname',
             validate , 
             activityController.searchActivity)
 
+router.get('/myactivities', 
+            isAuth, 
+            validate , 
+            activityController.myActivities)
+
 router.get('/:activityId', 
             isAuth , 
             activityController.getActivity)

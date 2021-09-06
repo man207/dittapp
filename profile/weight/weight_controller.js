@@ -14,12 +14,6 @@ exports.addWeight = (req, res, next) => {
     }
 
 
-    
-    console.log(date)
-
-
-    
-
     Weight.findOne(
         {
             user: userId,

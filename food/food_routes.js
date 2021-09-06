@@ -19,9 +19,19 @@ router.get('/search/:foodname',
             validate , 
             foodController.searchFood)
 
+
+router.get('/deletefoodwarning/:foodId', 
+            isAuth, 
+            validate , 
+            foodController.deleteFoodWarning)
+            
+router.get('/myfoods', 
+                isAuth , 
+                foodController.myFoods)
 router.get('/:foodId', 
             isAuth , 
             foodController.getFood)
+
 
 router.put('/:foodId', 
             isAuth, 

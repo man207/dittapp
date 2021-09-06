@@ -50,9 +50,7 @@ const foodCreateValidationRules = () => {
         }
         return true
       }),
-      body('public')
-      .optional()
-      .isBoolean(),
+
       body('serving') //TODO: these might need more work
       .custom( (value, {req}) => {
         if (!value) {
@@ -63,15 +61,7 @@ const foodCreateValidationRules = () => {
         }
         return true;
       }),
-      body('perAmount')
-      .toFloat()
-      .isFloat({min:0})
-      .custom( (value, {req}) => {
-        if ((req.body.carb + req.body.fat + req.body.protein) > value) {
-          throw new Error('the serving size is less than sum of macros');
-        }
-        return true;
-      })
+      
     ]
   }
 
@@ -125,9 +115,7 @@ const foodCreateValidationRules = () => {
         }
         return true
       }),
-      body('public')
-      .optional()
-      .isBoolean(),
+
       body('serving') //TODO: these might need more work
       .optional()
       .custom( (value, {req}) => {
