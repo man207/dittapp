@@ -6,3 +6,6 @@ npm install
 
 ## run
 npm start
+
+## run without nodemon
+node index.js
