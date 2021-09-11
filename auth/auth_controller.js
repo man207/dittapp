@@ -54,12 +54,53 @@ exports.login = (req, res, next) => {
         {
           email: loadedUser.email,
           userId: loadedUser._id.toString(),
-          userRole: loadedUser.role
         },
         'somesupersecretsecret',
-        { expiresIn: '1h' }
+        { expiresIn: '24h' }
       );
-      res.status(200).json({ token: token, userId: loadedUser._id.toString() });
+      res.status(200).json({ token: token, userId: loadedUser._id.toString(), expiresIn: 86400 });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+
+exports.changePassword = (req, res, next) => {
+
+  const userId = req.userId
+
+  const password = req.body.password;
+  const oldPassword = req.body.oldPassword;
+
+  let loadedUser;
+
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        const error = new Error('A user could not be found.');
+        error.statusCode = 404;
+        throw error;
+      }
+      loadedUser = user;
+      isEqual = bcrypt.compareSync(oldPassword, user.password);
+      if (!isEqual) {
+        const error = new Error('Wrong password!');
+        error.statusCode = 401;
+        throw error;
+      }
+      bcrypt
+        .hash(password, 10)
+        .then(hashedPw => {
+          user.password = hashedPw;
+          user.save();
+          return res.status(201).json({
+            message: 'Password Changed',
+        }) 
+        })
     })
     .catch(err => {
       if (!err.statusCode) {

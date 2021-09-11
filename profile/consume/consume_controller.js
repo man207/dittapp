@@ -1,5 +1,6 @@
 const Consume = require('./consume_model')
-
+const startOfDay = require('date-fns/startOfDay')
+const endOfDay = require('date-fns/endOfDay')
 
 exports.createConsume = (req, res, next) => {
 
@@ -59,7 +60,7 @@ exports.editConsume = (req, res, next) => {
     const userId = req.userId;
 
 
-    Consume.findOneAndUpdate({ _id: consumeId, user: userId }, newData, { new: true }, function (err, doc) {
+    Consume.findOneAndUpdate({ _id: consumeId, user: userId }, newData, { new: true }, function (err, result) {
         if (err) return res.status(500).json({
             message: err
         });
@@ -67,7 +68,7 @@ exports.editConsume = (req, res, next) => {
             message: "not Found"
         });
         return res.status(200).json({
-            resault: result
+            result: result
         });
     });
 
@@ -141,4 +142,48 @@ exports.getConsume = (req, res, next) => {
             }
             next(err);
         })
+};
+
+exports.getDayConsume = (req, res, next) => {
+
+    const userId = req.userId;
+
+    const date = req.params.date;
+
+    
+    if (!date) {
+        day = new Date()
+    }
+    else {
+        day = new Date(date[0], date[1] - 1, date[2])
+    }
+
+    
+    Consume.find(
+        { user: userId,
+            date:   
+                {
+                    $gte: startOfDay(day),
+                    $lt: endOfDay(day)
+                }
+        }).populate('food')
+        .then(consume => {
+            if (!consume) {
+                return res.status(404).json({
+                    message: 'no consume found'
+                })
+            }
+            else {
+                return res.status(200).json({
+                    result: consume
+                })
+            }
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+
 };

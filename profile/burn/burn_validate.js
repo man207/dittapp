@@ -15,9 +15,11 @@ const burnCreateValidationRules = () => {
       .isEmpty()
       .toFloat()
       .isFloat({min:0}),
-    body('date')
+      body('date')
       .optional()
-      .isDate(),
+      .custom((date) => {
+        return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+      }),
   ]
 }
 

@@ -14,16 +14,32 @@ router.post('/add',
             validate,
             foodController.createFood)
 
+router.get('/search/:foodname', 
+            isAuth, 
+            validate , 
+            foodController.searchFood)
+
+
+router.get('/deletefoodwarning/:foodId', 
+            isAuth, 
+            validate , 
+            foodController.deleteFoodWarning)
+            
+router.get('/myfoods', 
+                isAuth , 
+                foodController.myFoods)
 router.get('/:foodId', 
             isAuth , 
             foodController.getFood)
+
 
 router.put('/:foodId', 
             isAuth, 
             foodEditValidationRules(), 
             validate , 
             foodController.editFood)
-            
+
+
 router.delete('/:foodId', 
             isAuth , 
             foodController.deleteFood)

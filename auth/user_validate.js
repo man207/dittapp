@@ -18,7 +18,7 @@ const userValidationRules = () => {
       body('password')
         .trim()
         .isLength({ min: 5 }),
-      body('firstName')
+      body('firstName') 
         .trim()
         .not()
         .isEmpty(),

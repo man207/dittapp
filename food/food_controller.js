@@ -1,41 +1,46 @@
 const Food = require('./food_model')
+const Consume = require('../profile/consume/consume_model')
 
 
 exports.createFood = (req, res, next) => {
 
     const name = req.body.name;
     const desc = req.body.desc;
-    const company = req.body.company;
     const calorie = req.body.calorie;
     const protein = req.body.protein;
     const carb = req.body.protein;
     const fat = req.body.fat;
     const unit = req.body.unit;
-    const public = req.body.public;
     const serving = req.body.serving;
     
-    const user = req.userId;
+    const userId = req.userId;
 
     food = new Food( {
         name: name,
         desc: desc,
-        company: company,
         calorie: calorie,
         protein: protein,
         carb: carb,
         fat: fat,
         unit: unit,
-        creator: user,
+        creator: userId,
         serving: serving,
-        public: public ? true : false //just to make it works with 0 and 1
     })
-    
-        
+
+
+    Food.countDocuments({creator: userId}).then( (count) => {
+        if (count => 50) {
+            return res.status(403).json({
+                message: "شما به حد نصاب تعداد غذاها رسیده‌اید"
+                })
+        }
+    })
+
     food
     .save()
     .then(result => {
         return res.status(201).json({
-            message: 'food created',
+            message: 'غذا ثبت شد',
             result: result
         })
     })
@@ -52,6 +57,7 @@ exports.createFood = (req, res, next) => {
 exports.editFood = (req, res, next) => {
 
     const newData = req.body;
+    delete newData.creator;
 
     const foodId = req.params.foodId;
 
@@ -63,7 +69,6 @@ exports.editFood = (req, res, next) => {
     // callback vs. promise?
     if (!['admin','mod'].includes(userRole)) {
         delete newData.verified;
-        delete newData.creator;
 
         Food.findOneAndUpdate({_id: foodId , creator: userId }, newData, { new: true}, function(err, doc) {
             if (err) return res.status(500).json({
@@ -97,10 +102,12 @@ exports.editFood = (req, res, next) => {
 exports.deleteFood = (req, res, next) => {
 
     const user = req.userId;
-    const userRole = req.userRole
+
 
     const foodId = req.params.foodId
 
+
+    
 
     // can i use delete() insted? 
     Food.findById(foodId)
@@ -110,7 +117,7 @@ exports.deleteFood = (req, res, next) => {
                 message: 'no food found'
             })
         } else {
-            if ( (food.creator.toString() != user) || (userRole != "admin") ) {
+            if ( (food.creator.toString() != user)) {
                 return res.status(403).json({
                     message: 'You Cannot delete this food'
                 })
@@ -134,19 +141,14 @@ exports.deleteFood = (req, res, next) => {
 exports.getFood = (req, res , next) => {
     
     const userId = req.userId;
-    const userRole = req.userRole
 
     const foodId = req.params.foodId
 
-    Food.findById(foodId)
+    Food.findOne({_id: foodId, $or : [ {public: true} , {creator: userId} ]})
     .then(food => {
         if (!food) {
             return res.status(404).json({
-                message: 'no food found'
-            })
-        } else if ( (food.creator.toString() != userId) && (!['admin','mod'].includes(userRole)) && (food.public == false)) { // food is not made public by the creator
-            return res.status(403).json({
-                message: 'no food found'
+                message: 'این غذا وجود ندارد'
             })
         }
         else {
@@ -162,4 +164,77 @@ exports.getFood = (req, res , next) => {
         next(err);
     })
 
+};
+
+exports.searchFood = (req, res , next) => {
+    const userId = req.userId;
+
+    let foodName= new RegExp(req.params.foodname,'i'); 
+    Food.find({name:foodName , $or : [ {public: true} , {creator: userId} ] })
+    .then(foods => {
+        console.log(foods)
+
+        if (!foods) {
+            return res.status(404).json({
+                message: 'غذایی پیدا نشد'
+            })
+        }
+        else {
+            return res.status(200).json({
+                result: foods
+            })
+        }
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+        next(err);
+    })
+
+};
+
+
+exports.myFoods = (req, res , next) => {
+    const userId = req.userId;
+    Food.find({creator: userId})
+    .then(foods => {
+
+        if (!foods) {
+            return res.status(404).json({
+                message: 'غذایی پیدا نشد'
+            })
+        }
+        else {
+            return res.status(200).json({
+                result: foods
+            })
+        }
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+        next(err);
+    })
+};
+
+
+exports.deleteFoodWarning = (req, res , next) => {
+    
+    const foodId = req.params.foodId;
+    Consume.countDocuments({food:foodId})
+    .then( (count) => {
+        if (count > 0) {
+            res.status(200).json({
+                message: `این غذا ${count} بار مصرف شده است. حذف شود؟`
+            })
+        }
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+        next(err);
+    })
 };
